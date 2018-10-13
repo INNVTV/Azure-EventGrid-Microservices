@@ -1,9 +1,11 @@
 # Azure EventGrid Microservices
-A proof of concept showcasing Azure EventGrid communication between two microservices:
+A proof of concept showcasing Azure EventGrid communication between two microservices (publisher/subscriber) as well as a message queue that is read by a validator:
 
-### **Publisher:** Sends messages to Event Grid.
+### **Publisher:** Sends messages to Event Grid (Console).
 
-### **Subscriber:** Subscribes to and acts upon received messages.
+### **Subscriber:** Subscribes to and acts upon received events via webhook. Sends a message to a storage queue for the validator to pick up (WebApi).
+
+### **Validator:** Checks message queue to verify that events are flowing through the system.
 
 # Architecture
 Here is the archtecture of the composed microservices:
@@ -12,7 +14,7 @@ Here is the archtecture of the composed microservices:
 
 
 # Running Sample:
-Update the .env file with your Azure Event Grid settings:
+Update the .env file with your Azure Event Grid settings
 
 **IMAGE HERE**
 
