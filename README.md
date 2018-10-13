@@ -23,3 +23,16 @@ You will see both console applications emit their status in your output window:
 
 **IMAGE HERE**
 
+# Azure Portal Setup #
+
+If you haven't previously used Event Grid in your Azure subscription, you may need to register the Event Grid resource provider.
+
+**In the Azure portal:**
+
+Select Subscriptions.
+Select the subscription you're using for Event Grid.
+Under Settings, select Resource providers.
+Find Microsoft.EventGrid.
+If not registered, select Register:
+
+[[https://github.com/INNVTV/Azure-EventGrid-Microservices/imgs/portal-resource-providers.png]]
