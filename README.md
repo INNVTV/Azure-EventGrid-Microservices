@@ -1,9 +1,9 @@
 # Azure EventGrid Microservices
-A proof of concept showcasing Azure EventGrid communication between two microservices.
+A proof of concept showcasing Azure EventGrid communication between two microservices:
 
-**Sender:** Send messages to Event Grid
+### **Publisher:** Sends messages to Event Grid. ###
 
-**Subscriber:** Subscribes to and acts upon recieved messages
+### **Subscriber:** Subscribes to and acts upon received messages. ###
 
 # Running Sample:
 Update the .env file with your Azure Event Grid settings:
