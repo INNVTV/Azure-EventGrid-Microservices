@@ -35,4 +35,4 @@ Under Settings, select Resource providers.
 Find Microsoft.EventGrid.
 If not registered, select Register:
 
-[[https://github.com/INNVTV/Azure-EventGrid-Microservices/blob/master/imgs/portal-resource-providers.png]]
+![Portal Resource Providers](https://github.com/INNVTV/Azure-EventGrid-Microservices/blob/master/imgs/portal-resource-providers.png)
