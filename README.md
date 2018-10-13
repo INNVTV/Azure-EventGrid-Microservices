@@ -1,17 +1,17 @@
 # Azure EventGrid Microservices
-A proof of concept showcasing Azure EventGrid communication between two microservices (publisher/subscriber) as well as a message queue that is read by a validator:
-
-### **Publisher:** Sends messages to Event Grid (Console).
-
-### **Subscriber:** Subscribes to and acts upon received events via webhook. Sends a message to a storage queue for the validator to pick up (WebApi).
-
-### **Validator:** Checks message queue to verify that events are flowing through the system.
-
-# Architecture
-Here is the archtecture of the composed microservices:
+A proof of concept showcasing Azure EventGrid communication between two microservices (publisher/subscriber) as well as a message queue that is read by a validator.
 
 ![Architecture](https://github.com/INNVTV/Azure-EventGrid-Microservices/blob/master/_docs/imgs/architecture.png)
 
+
+# Publisher:
+A console app that sends test notifications to Event Grid topics in batches on a set schedule.
+
+# Subscriber:
+A web api that subscribes to and acts upon received events via webhooks. Once a notification is received it sends a message to a storage queue for the validator to pick up.
+
+# Validator:
+A consol app that polls the storage queue using an exponential backoff strategy. Verifies that events are flowing through the system and writes final output to the console.
 
 # Running Sample:
 Update the .env file with your Azure Event Grid settings
@@ -21,6 +21,14 @@ Update the .env file with your Azure Event Grid settings
 You should also update the appsettings.json file in both projects if debugging the projects seperatly:
 
 **IMAGE HERE**
+
+Deploy the WebApi project to Azure. For our sample we have an Azure Pipelines project set up for the deployment:
+
+https://dev.azure.com/Github-Samples/Azure-EventGrid-Microservices/_build
+
+This allows the webhooks to be available for EventGrid to call.
+
+Docker Compose will only build the 2 console apps to run locally. *See architecture above*
 
 Build and run using Docker Compose:
 
