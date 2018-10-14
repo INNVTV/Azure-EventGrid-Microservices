@@ -8,13 +8,13 @@ namespace Subscriber.Controllers
 {
     [Route("webhook/[controller]")]
     [ApiController]
-    public class TopicOneController : ControllerBase
+    public class Topic1Controller : ControllerBase
     {
-        // GET api/topicOne
+        // GET api/topic1
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "Topic one event notification received!" };
+            return new string[] { "Topic 1 event notification received!" };
         }
     }
 }
