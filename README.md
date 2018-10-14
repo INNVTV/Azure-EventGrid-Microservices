@@ -26,6 +26,8 @@ Deploy the WebApi project to Azure. For our sample we have an Azure Pipelines pr
 
 https://dev.azure.com/Github-Samples/Azure-EventGrid-Microservices/_build
 
+The build process in outlined within **azure-pipelines.yml**
+
 This allows the webhooks to be available for EventGrid to call.
 
 Docker Compose will only build the 2 console apps to run locally. *See architecture above*
