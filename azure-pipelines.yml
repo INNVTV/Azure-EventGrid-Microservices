@@ -1,8 +1,7 @@
+#CoreCLI YAML Reference: https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core?view=vsts&tabs=yaml
+
 pool:
   vmImage: 'Ubuntu 16.04'
-
-steps:
-- script: echo Running build...
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -13,16 +12,13 @@ steps:
   inputs:
     command: build
     projects: 'Subscriber/Subscriber.csproj'
-    
-    publishWebProjects: true # Required when command == Publish
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: True
 
-
-#- task: DotNetCoreCLI@2
-  #inputs:
-    #command: publish
+- task: DotNetCoreCLI@2
+  inputs:
+    command: publish -output $(Build.ArtifactStagingDirectory)
     #projects: 'Subscriber/Subscriber.csproj'
     #publishWebProjects: True
     #arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     #zipAfterPublish: True
+
+- task: PublishBuildArtifacts@1
