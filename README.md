@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/Github-Samples/Azure-EventGrid-Microservices/_apis/build/status/INNVTV.Azure-EventGrid-Microservices)](https://dev.azure.com/Github-Samples/Azure-EventGrid-Microservices/_build/latest?definitionId=1)
+
 # Azure EventGrid Microservices
 A proof of concept showcasing Azure EventGrid communication between two microservices (publisher/subscriber) as well as a message queue that is read by a validator.
 
