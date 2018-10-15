@@ -72,7 +72,10 @@ https://event-grid-subscriber.azurewebsites.net/webhook/topic1
 
 https://event-grid-subscriber.azurewebsites.net/webhook/topic2
 
-You will need to confiure each EventGrid topic to call the associated webhook by configuring the Event Subscription settings within the Azure Portal.
+You will need to confiure each EventGrid topic to call the associated webhook by configuring the Event Subscription settings within the Azure Portal. Keep in mind that GridEvent types are sent as an array while the CloudEvent type is sent one at a time.
+
+![Event Grid Subscription](https://github.com/INNVTV/Azure-EventGrid-Microservices/blob/master/_docs/imgs/event-grid-subscription.png)
+
 
 Every time someone subscribes to an event, Event Grid sends a validation event to the endpoint with a validationCode in the data payload. The endpoint is required to echo this back in the response body to prove the endpoint is valid and owned by you. 
 

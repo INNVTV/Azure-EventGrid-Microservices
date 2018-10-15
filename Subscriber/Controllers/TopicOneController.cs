@@ -33,8 +33,7 @@ namespace Subscriber.Controllers
                 }
                 else if (HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault() == "Notification")
                 {
-                    // Check to see if this is passed in using
-                    // the CloudEvents schema
+                    // Check to see if this is passed in using the CloudEvents schema
                     if (IsCloudEvent(jsonContent))
                     {
                         return HandleCloudEvent(jsonContent);
@@ -90,7 +89,10 @@ namespace Subscriber.Controllers
 
                 // Check for the cloud events version property.
                 var version = eventData["cloudEventsVersion"].Value<string>();
-                if (!string.IsNullOrEmpty(version)) return true;
+                if (!string.IsNullOrEmpty(version))
+                {
+                    return true;
+                }
             }
             catch (Exception e)
             {
