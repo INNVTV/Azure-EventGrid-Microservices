@@ -26,13 +26,13 @@ You should also update the appsettings.json file in both projects if debugging t
 
 Deploy the WebApi project to Azure. For our sample we have an Azure Pipelines project set up for the deployment:
 
-https://dev.azure.com/Github-Samples/Azure-EventGrid-Microservices/_build
+https://dev.azure.com/github-samples/azure-eventgrid-microservices/_build
 
 The build process in outlined within **azure-pipelines.yml**
 
 This allows the webhooks to be available for EventGrid to call:
 
-https://event-grid-subscriber.azurewebsites.net/
+https://event-grid-subscriber.azurewebsites.net/webhook/topic1
 
 Docker Compose will only build the 2 console apps to run locally. *See architecture above*
 
@@ -64,7 +64,19 @@ Create your topics using "Event Grid Topic" resource type:
 ![Event Grid Topic](https://github.com/INNVTV/Azure-EventGrid-Microservices/blob/master/_docs/imgs/event-grid-topic.png)
 
 
-Each topic will have a unique access key and topic endpoint. These should be updated in the global .env file and the appsettings.json files within each console app.
+Each topic will have a unique access key and topic endpoint. These should be updated in the global .env file and the appsettings.json files within the Publisher console app so that the publisher can send notifications to each topic.
+
+**The Subscriber webapi project provides a webhook for each topic:**
+
+https://event-grid-subscriber.azurewebsites.net/webhook/topic1
+
+https://event-grid-subscriber.azurewebsites.net/webhook/topic2
+
+You will need to confiure each EventGrid topic to call the associated webhook by configuring the Event Subscription settings within the Azure Portal.
+
+Every time someone subscribes to an event, Event Grid sends a validation event to the endpoint with a validationCode in the data payload. The endpoint is required to echo this back in the response body to prove the endpoint is valid and owned by you. 
+
+The Validator and Subscriber will only need the access keys for the storage queue resource so that they can communicate via message queues.
 
 ### **Subscribe to custom topic**
 You subscribe to an event grid topic to tell Event Grid which events you want to track, and where to send the events.
