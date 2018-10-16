@@ -79,7 +79,7 @@ You will need to confiure each EventGrid topic to call the associated webhook by
 
 Every time someone subscribes to an event, Event Grid sends a validation event to the endpoint with a validationCode in the data payload. The endpoint is required to echo this back in the response body to prove the endpoint is valid and owned by you. 
 
-The Validator and Subscriber will only need the access keys for the storage queue resource so that they can communicate via message queues.
+The Validator and Subscriber will only need the access keys, storage & queue names for the storage queue resource so that they can communicate via message queues to validate event notifications are passing through the system.
 
 ### **Subscribe to custom topic**
 You subscribe to an event grid topic to tell Event Grid which events you want to track, and where to send the events.
