@@ -55,7 +55,7 @@ namespace Validator
                 else{
                     Console.WriteLine("Queue empty.");
                 }
-                
+
                 Console.WriteLine("Sleeping for 1 minute...");
                 Thread.Sleep(60000);
             }

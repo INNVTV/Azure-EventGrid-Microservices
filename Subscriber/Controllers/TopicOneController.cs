@@ -31,6 +31,21 @@ namespace Subscriber.Controllers
             CloudQueue queue = queueClient.GetQueueReference(AppSettings.QueueName);
             queue.CreateIfNotExistsAsync();
 
+            // TEST. REMOVE!
+                    var queueMessage = new QueueMessage{
+                        Topic = "Test",
+                        Source = "Test",
+                        EventType = "Test",
+                        EventCount = 0
+                    };
+
+                    var messageAsJson = JsonConvert.SerializeObject(queueMessage);
+                    CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
+                    queue.AddMessageAsync(message);
+
+            // ----------------
+
+
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
                 var jsonContent = reader.ReadToEnd();

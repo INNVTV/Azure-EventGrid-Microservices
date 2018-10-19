@@ -22,26 +22,25 @@ namespace Publisher
             var eventClient_Topic1 = new EventGridClient(topic1Credentials);
             var eventClient_Topic2 = new EventGridClient(topic2Credentials);
 
+            // Create our Event data:
+            var eventsListTopic1 = GetTopic1_Events();
+            var eventsListTopic2 = GetTopic2_Events();   
+
+            Console.WriteLine(eventsListTopic1[0].EventType);  
+
             while(true)
             {
-                // Create our Event data:
-                var eventsListTopic1 = GetTopic1_Events();
-                var eventsListTopic2 = GetTopic2_Events();
-
-                
-
                 // Send a "TopicOne" event every 10 seconds
-                // and a "TopicTwo" event every 20 seconds
-
-                Thread.Sleep(10000);
+                // and a "TopicTwo" event every 20 seconds  
                 Console.WriteLine("Sending 'TopicOne' event to the grid...");
                 eventClient_Topic1.PublishEventsAsync(new Uri(AppSettings.Topic1.Endpoint).Host, eventsListTopic1).GetAwaiter().GetResult();
-
                 Thread.Sleep(10000);
+                
                 Console.WriteLine("Sending 'TopicOne' event to the grid...");
                 Console.WriteLine("Sending 'TopicTwo' event to the grid...");
                 eventClient_Topic1.PublishEventsAsync(new Uri(AppSettings.Topic1.Endpoint).Host, eventsListTopic1).GetAwaiter().GetResult();
                 eventClient_Topic2.PublishEventsAsync(new Uri(AppSettings.Topic2.Endpoint).Host, eventsListTopic2).GetAwaiter().GetResult();
+                Thread.Sleep(10000);
             }
         }
 
@@ -52,7 +51,7 @@ namespace Publisher
             eventsList.Add(new EventGridEvent()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    EventType = "My.Namespace.Topic1",
+                    EventType = "Notification",
                     Data = new CustomTopicData()
                     {
                         Topic = "Topic1",
@@ -74,7 +73,7 @@ namespace Publisher
             eventsList.Add(new EventGridEvent()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    EventType = "My.Namespace.Events.Topic2",
+                    EventType = "Notification",
                     Data = new CustomTopicData()
                     {
                         Topic = "Topic2",
@@ -88,7 +87,7 @@ namespace Publisher
                 eventsList.Add(new EventGridEvent()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    EventType = "My.Namespace.Topic2",
+                    EventType = "Notification",
                     Data = new CustomTopicData()
                     {
                         Topic = "Topic2",

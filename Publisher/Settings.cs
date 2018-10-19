@@ -24,11 +24,15 @@ namespace Publisher
             var _topic2Endpoint = configuration["Topic2:Endpoint"];
             var _topic2Key = configuration["Topic2:Key"];
 
-            AppSettings.Topic1.Endpoint = _topic1Endpoint;
-            AppSettings.Topic1.Key = _topic1Key;
-
-            AppSettings.Topic2.Endpoint = _topic2Endpoint;
-            AppSettings.Topic2.Key = _topic2Key;
+            AppSettings.Topic1 = new Topic
+            {
+                Endpoint = _topic1Endpoint,
+                Key = _topic1Key
+            };
+            AppSettings.Topic2 = new Topic{
+                Endpoint = _topic2Endpoint,
+                Key = _topic2Key
+            };
         }
     }
 }
