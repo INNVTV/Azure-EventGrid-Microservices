@@ -31,8 +31,8 @@ namespace Validator
                 // Check message queue every 60 seconds...
                 Console.WriteLine("Checking message queue...");
 
-                // Get a batch of 10 messages
-                List<CloudQueueMessage> retrievedMessages = queue.GetMessagesAsync(10).Result.ToList();
+                // Get a batch of 20 messages
+                List<CloudQueueMessage> retrievedMessages = queue.GetMessagesAsync(20).Result.ToList();
      
                 if(retrievedMessages.Count > 0)
                 {
@@ -41,7 +41,7 @@ namespace Validator
                     //Process the message in less than 30 seconds, and then delete each one:
                     foreach(var message in retrievedMessages)
                     {
-                        var deserializedMessage = (QueueMessage)JsonConvert.DeserializeObject(message.AsString);
+                        var deserializedMessage = JsonConvert.DeserializeObject<QueueMessage>(message.AsString);
                         Console.WriteLine(string.Concat("Type: ", deserializedMessage.EventType));
                         Console.WriteLine(string.Concat("Topic: ", deserializedMessage.Topic));
                         Console.WriteLine(string.Concat("Source: ", deserializedMessage.Source));
@@ -56,8 +56,8 @@ namespace Validator
                     Console.WriteLine("Queue empty.");
                 }
 
-                Console.WriteLine("Sleeping for 1 minute...");
-                Thread.Sleep(60000);
+                Console.WriteLine("Sleeping for 30 seconds...");
+                Thread.Sleep(30000);
             }
         }
     }

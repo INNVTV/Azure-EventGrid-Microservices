@@ -31,21 +31,6 @@ namespace Subscriber.Controllers
             CloudQueue queue = queueClient.GetQueueReference(AppSettings.QueueName);
             queue.CreateIfNotExistsAsync();
 
-            // TEST. REMOVE!
-                    var queueMessagTe = new QueueMessage{
-                        Topic = "Test",
-                        Source = "Test",
-                        EventType = "Test",
-                        EventCount = 0
-                    };
-
-                    var messageAsJsonT = JsonConvert.SerializeObject(queueMessagTe);
-                    CloudQueueMessage messageT = new CloudQueueMessage(messageAsJsonT);
-                    queue.AddMessageAsync(messageT);
-
-            // ----------------
-
-
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
                 var jsonContent = reader.ReadToEnd();
@@ -59,7 +44,7 @@ namespace Subscriber.Controllers
                 {
                     return HandleValidation(jsonContent);
                 }
-                else if (HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault() == "Notification")
+                else //else if (HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault() == "Notification") //SWITCH BACK
                 {
                     var _topic = String.Empty;
                     var _source = String.Empty;
@@ -88,7 +73,7 @@ namespace Subscriber.Controllers
                     // Create a message and add it to the queue.
                     var queueMessage = new QueueMessage{
                         Topic = _topic,
-                        Source = _source,
+                        Source = _source + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
                         EventType = eventType,
                         EventCount = _count
                     };
