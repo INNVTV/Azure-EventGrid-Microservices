@@ -50,6 +50,14 @@ namespace Subscriber.Controllers
                     var _source = String.Empty;
                     var _count = 0;
 
+                    // Create a message and add it to the queue.
+                    var queueMessage = new QueueMessage{
+                        Topic = _topic,
+                        Source = _source + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
+                        EventType = eventType,
+                        EventCount = _count
+                    };
+
                     // Check to see if this is passed in using the CloudEvents schema
                     if (IsCloudEvent(jsonContent))
                     {
@@ -71,12 +79,12 @@ namespace Subscriber.Controllers
                     }               
 
                     // Create a message and add it to the queue.
-                    var queueMessage = new QueueMessage{
-                        Topic = _topic,
-                        Source = _source + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
-                        EventType = eventType,
-                        EventCount = _count
-                    };
+                    //var queueMessage = new QueueMessage{
+                        //Topic = _topic,
+                        //Source = _source + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
+                        //EventType = eventType,
+                        //EventCount = _count
+                    //};
 
                     var messageAsJson = JsonConvert.SerializeObject(queueMessage);
                     CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
