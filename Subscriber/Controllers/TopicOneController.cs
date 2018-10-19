@@ -43,6 +43,12 @@ namespace Subscriber.Controllers
                         EventType = "R",
                         EventCount = 0
                     };
+                    var messageAsJson = JsonConvert.SerializeObject(queueMessage);
+                    CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
+                    queue.AddMessageAsync(message);
+
+
+
 
                 var jsonContent = reader.ReadToEnd();
 
@@ -88,10 +94,9 @@ namespace Subscriber.Controllers
                         //EventType = eventType,
                         //EventCount = _count
                     //};
-
-                    var messageAsJson = JsonConvert.SerializeObject(queueMessage);
-                    CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
-                    queue.AddMessageAsync(message);
+                    //var messageAsJson = JsonConvert.SerializeObject(queueMessage);
+                    //CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
+                    //queue.AddMessageAsync(message);
                     
                     return Ok();
                 }
@@ -110,6 +115,10 @@ namespace Subscriber.Controllers
                         EventType = e.Message,
                         EventCount = 0
                     };
+
+                    var messageAsJson = JsonConvert.SerializeObject(queueMessage);
+                    CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
+                    queue.AddMessageAsync(message);
 
                     return BadRequest(); 
             }
