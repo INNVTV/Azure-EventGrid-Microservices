@@ -33,6 +33,14 @@ namespace Subscriber.Controllers
 
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
+                 // Create a message and add it to the queue.
+                    var queueMessage = new QueueMessage{
+                        Topic = "R",
+                        Source = "R" + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
+                        EventType = "R",
+                        EventCount = 0
+                    };
+
                 var jsonContent = reader.ReadToEnd();
 
                 var eventType = "";
@@ -44,19 +52,11 @@ namespace Subscriber.Controllers
                 {
                     return HandleValidation(jsonContent);
                 }
-                else //else if (HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault() == "Notification") //SWITCH BACK
+                else if (HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault() == "Notification") //SWITCH BACK
                 {
                     var _topic = String.Empty;
                     var _source = String.Empty;
                     var _count = 0;
-
-                    // Create a message and add it to the queue.
-                    var queueMessage = new QueueMessage{
-                        Topic = _topic,
-                        Source = _source + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
-                        EventType = eventType,
-                        EventCount = _count
-                    };
 
                     // Check to see if this is passed in using the CloudEvents schema
                     if (IsCloudEvent(jsonContent))
