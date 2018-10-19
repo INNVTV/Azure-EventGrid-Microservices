@@ -19,7 +19,7 @@ namespace Subscriber.Controllers
     [Route("webhook/[controller]")]
     [ApiController]
     public class Topic1Controller : ControllerBase
-    {        
+    {  
         [HttpPost] //<-- /webhook/topic1
         public ActionResult Post()
         {
@@ -31,8 +31,11 @@ namespace Subscriber.Controllers
             CloudQueue queue = queueClient.GetQueueReference(AppSettings.QueueName);
             queue.CreateIfNotExistsAsync();
 
+            try{
+
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
+                // REMOVE
                  // Create a message and add it to the queue.
                     var queueMessage = new QueueMessage{
                         Topic = "R",
@@ -94,6 +97,19 @@ namespace Subscriber.Controllers
                 }
 
                 return BadRequest();                
+            }
+
+            
+            }
+            catch(Exception e)
+            {
+                // Create a message and add it to the queue.
+                    var queueMessage = new QueueMessage{
+                        Topic = "EXCEPTIPN",
+                        Source = "R" + "---",
+                        EventType = e.Message,
+                        EventCount = 0
+                    };
             }
         }
         private JsonResult HandleValidation(string jsonContent)
