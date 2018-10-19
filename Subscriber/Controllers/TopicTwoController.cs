@@ -10,6 +10,8 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Subscriber.Models;
+using Microsoft.WindowsAzure.Storage; 
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace Subscriber.Controllers
 {
@@ -17,12 +19,22 @@ namespace Subscriber.Controllers
     [ApiController]
     public class Topic2Controller : ControllerBase
     {        
-        [HttpPost] //<-- /webhook/topic1
+        [HttpPost] //<-- /webhook/topic2
         public ActionResult Post()
         {
+            // Connect to the
+            // storage message queue:
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(AppSettings.ConnectionString);
+
+            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+            CloudQueue queue = queueClient.GetQueueReference(AppSettings.QueueName);
+            queue.CreateIfNotExistsAsync();
+
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
                 var jsonContent = reader.ReadToEnd();
+
+                var eventType = "";
 
                 // Check the event type.
                 // Return the validation code if it's a "SubscriptionValidation" request. 
@@ -33,14 +45,43 @@ namespace Subscriber.Controllers
                 }
                 else if (HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault() == "Notification")
                 {
-                    // Check to see if this is passed in using
-                    // the CloudEvents schema
+                    var _topic = String.Empty;
+                    var _source = String.Empty;
+                    var _count = 0;
+
+                    // Check to see if this is passed in using the CloudEvents schema
                     if (IsCloudEvent(jsonContent))
                     {
-                        return HandleCloudEvent(jsonContent);
-                    }
+                        eventType= "Cloud";
+                        var cloudEvent = UnpackCloudEvent(jsonContent);
 
-                    return HandleGridEvents(jsonContent);
+                        _topic = ((CustomTopicData)cloudEvent.Data).Topic;
+                        _source = ((CustomTopicData)cloudEvent.Data).Source;
+                        _count = 1; //<-- Will always be 1 if CloudEvent
+                    }
+                    else
+                    {
+                        eventType = "Grid";
+                        var gridEvents = UnpackGridEvents(jsonContent);
+                        
+                        _topic = ((CustomTopicData)gridEvents[0].Data).Topic;
+                        _source = ((CustomTopicData)gridEvents[0].Data).Source;
+                        _count = gridEvents.Count;
+                    }               
+
+                    // Create a message and add it to the queue.
+                    var queueMessage = new QueueMessage{
+                        Topic = _topic,
+                        Source = _source,
+                        EventType = eventType,
+                        EventCount = _count
+                    };
+
+                    var messageAsJson = JsonConvert.SerializeObject(queueMessage);
+                    CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
+                    queue.AddMessageAsync(message);
+                    
+                    return Ok();
                 }
 
                 return BadRequest();                
@@ -57,26 +98,30 @@ namespace Subscriber.Controllers
                 validationResponse = validationCode
             });
         }
-        private ActionResult HandleGridEvents(string jsonContent)
+        private List<GridEvent<dynamic>> UnpackGridEvents(string jsonContent)
         {
+            //Note: GridEvents are an array 
             var events = JArray.Parse(jsonContent);
+
+            var detailsList = new List<GridEvent<dynamic>>();
             foreach (var e in events)
             {
                 // Invoke a method on the clients for 
                 // an event grid notiification.                        
                 var details = JsonConvert.DeserializeObject<GridEvent<dynamic>>(e.ToString());
+                detailsList.Add(details);
             }
 
-            return Ok();
+            return detailsList;
         }
-        private ActionResult HandleCloudEvent(string jsonContent)
+        private CloudEvent<dynamic> UnpackCloudEvent(string jsonContent)
         {
+            //Note: CloudEvents are an single items 
             var details = JsonConvert.DeserializeObject<CloudEvent<dynamic>>(jsonContent);
+            return details;
 
             // CloudEvents schema and mapping to 
             // Event Grid: https://docs.microsoft.com/en-us/azure/event-grid/cloudevents-schema 
-
-            return Ok();
         }    
         private static bool IsCloudEvent(string jsonContent)
         {
@@ -90,7 +135,10 @@ namespace Subscriber.Controllers
 
                 // Check for the cloud events version property.
                 var version = eventData["cloudEventsVersion"].Value<string>();
-                if (!string.IsNullOrEmpty(version)) return true;
+                if (!string.IsNullOrEmpty(version))
+                {
+                    return true;
+                }
             }
             catch (Exception e)
             {

@@ -18,6 +18,9 @@ namespace Subscriber
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            //Generate application settings for global/static access:
+            Settings.ApplyAppSettings();
         }
 
         public IConfiguration Configuration { get; }

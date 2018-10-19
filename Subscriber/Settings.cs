@@ -2,13 +2,13 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
-using Validator.Models;
+using Subscriber.Models;
 
-namespace Validator
+namespace Subscriber
 {
     public static class Settings
     {
-        public static AppSettings GetAppSettings()
+        public static void ApplyAppSettings()
         {
             //Get configuration from Docker/Compose (via .env and appsettings.json)
             var builder = new ConfigurationBuilder()
@@ -22,15 +22,11 @@ namespace Validator
             var _queueName = configuration["Storage:Queue"];
             var _storageKey = configuration["Storage:Key"];
 
-            var appSettings = new AppSettings{
-                    StorageName = _storageName,
-                    StorageKey = _storageKey,
-                    QueueName = _queueName,
-                    QueueAddress = string.Concat("https://", _storageName, ".queue.core.windows.net/", _queueName),
-                    ConnectionString = string.Concat("DefaultEndpointsProtocol=https;AccountName=", _storageName ,";AccountKey=", _storageKey)
-                };
-
-            return appSettings;
+            AppSettings.StorageName = _storageName;
+            AppSettings.StorageKey = _storageKey;
+            AppSettings.QueueName = _queueName;
+            AppSettings.QueueAddress = string.Concat("https://", _storageName, ".queue.core.windows.net/", _queueName);
+            AppSettings.ConnectionString = string.Concat("DefaultEndpointsProtocol=https;AccountName=", _storageName ,";AccountKey=", _storageKey);
         }
     }
 }
