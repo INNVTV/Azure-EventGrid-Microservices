@@ -32,16 +32,16 @@ namespace Subscriber.Controllers
             queue.CreateIfNotExistsAsync();
 
             // TEST. REMOVE!
-                    var queueMessage = new QueueMessage{
+                    var queueMessagTe = new QueueMessage{
                         Topic = "Test",
                         Source = "Test",
                         EventType = "Test",
                         EventCount = 0
                     };
 
-                    var messageAsJson = JsonConvert.SerializeObject(queueMessage);
-                    CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
-                    queue.AddMessageAsync(message);
+                    var messageAsJsonT = JsonConvert.SerializeObject(queueMessagTe);
+                    CloudQueueMessage messageT = new CloudQueueMessage(messageAsJsonT);
+                    queue.AddMessageAsync(messageT);
 
             // ----------------
 
