@@ -2,9 +2,11 @@ version: "3"
 services:
     publisher:
         build: Publisher/.
+        container_name: "publisher"
         env_file: .env
     validator:
         build: Validator/.
+        container_name: "validator"
         env_file: .env
 
 
