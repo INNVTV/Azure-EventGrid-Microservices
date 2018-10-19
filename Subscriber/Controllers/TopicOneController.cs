@@ -110,6 +110,8 @@ namespace Subscriber.Controllers
                         EventType = e.Message,
                         EventCount = 0
                     };
+
+                    return BadRequest(); 
             }
         }
         private JsonResult HandleValidation(string jsonContent)
