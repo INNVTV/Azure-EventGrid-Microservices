@@ -31,8 +31,6 @@ namespace Subscriber.Controllers
             CloudQueue queue = queueClient.GetQueueReference(AppSettings.QueueName);
             queue.CreateIfNotExistsAsync();
 
-            try{
-
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
                 var jsonContent = reader.ReadToEnd();
@@ -46,7 +44,7 @@ namespace Subscriber.Controllers
                 {
                     return HandleValidation(jsonContent);
                 }
-                else if (HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault() == "Notification") //SWITCH BACK
+                else if (HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault() == "Notification")
                 {
                     var _topic = String.Empty;
                     var _source = String.Empty;
@@ -79,7 +77,7 @@ namespace Subscriber.Controllers
                     // Create a message and add it to the queue.
                     var queueMessage = new QueueMessage{
                         Topic = _topic,
-                        Source = _source + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
+                        Source = _source,
                         EventType = eventType,
                         EventCount = _count
                     };
@@ -92,25 +90,6 @@ namespace Subscriber.Controllers
                 }
 
                 return BadRequest();                
-            }
-
-            
-            }
-            catch(Exception e)
-            {
-                // Create a message and add it to the queue.
-                    var queueMessage = new QueueMessage{
-                        Topic = "EXCEPTIPN",
-                        Source = "R" + "---",
-                        EventType = e.Message,
-                        EventCount = 0
-                    };
-
-                    var messageAsJson = JsonConvert.SerializeObject(queueMessage);
-                    CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
-                    queue.AddMessageAsync(message);
-
-                    return BadRequest(); 
             }
         }
         private JsonResult HandleValidation(string jsonContent)

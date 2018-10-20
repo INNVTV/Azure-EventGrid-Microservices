@@ -13,12 +13,13 @@ using Subscriber.Models;
 using Microsoft.WindowsAzure.Storage; 
 using Microsoft.WindowsAzure.Storage.Queue;
 
+
 namespace Subscriber.Controllers
 {
     [Route("webhook/[controller]")]
     [ApiController]
     public class Topic2Controller : ControllerBase
-    {        
+    {  
         [HttpPost] //<-- /webhook/topic2
         public ActionResult Post()
         {
@@ -29,7 +30,7 @@ namespace Subscriber.Controllers
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
             CloudQueue queue = queueClient.GetQueueReference(AppSettings.QueueName);
             queue.CreateIfNotExistsAsync();
-
+            
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
                 var jsonContent = reader.ReadToEnd();
@@ -55,8 +56,10 @@ namespace Subscriber.Controllers
                         eventType= "Cloud";
                         var cloudEvent = UnpackCloudEvent(jsonContent);
 
-                        _topic = ((CustomTopicData)cloudEvent.Data).Topic;
-                        _source = ((CustomTopicData)cloudEvent.Data).Source;
+                        var topicData = JsonConvert.DeserializeObject<CustomTopicData>(cloudEvent.Data.ToString());
+
+                        _topic = topicData.Topic;
+                        _source = topicData.Source;
                         _count = 1; //<-- Will always be 1 if CloudEvent
                     }
                     else
@@ -64,8 +67,10 @@ namespace Subscriber.Controllers
                         eventType = "Grid";
                         var gridEvents = UnpackGridEvents(jsonContent);
                         
-                        _topic = ((CustomTopicData)gridEvents[0].Data).Topic;
-                        _source = ((CustomTopicData)gridEvents[0].Data).Source;
+                        var topicData = JsonConvert.DeserializeObject<CustomTopicData>(gridEvents[0].Data.ToString());
+
+                        _topic = topicData.Topic;
+                        _source = topicData.Source;
                         _count = gridEvents.Count;
                     }               
 

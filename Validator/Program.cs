@@ -29,6 +29,7 @@ namespace Validator
             while(true)
             {
                 // Check message queue every 60 seconds...
+                Console.WriteLine();
                 Console.WriteLine("Checking message queue...");
 
                 // Get a batch of 20 messages
@@ -37,6 +38,8 @@ namespace Validator
                 if(retrievedMessages.Count > 0)
                 {
                     Console.WriteLine(string.Concat("Got ", retrievedMessages.Count, " messages:"));
+                    Console.WriteLine();
+
 
                     //Process the message in less than 30 seconds, and then delete each one:
                     foreach(var message in retrievedMessages)
