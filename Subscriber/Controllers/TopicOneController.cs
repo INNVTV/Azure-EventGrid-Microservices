@@ -35,21 +35,6 @@ namespace Subscriber.Controllers
 
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
-                // REMOVE
-                 // Create a message and add it to the queue.
-                    var queueMessage = new QueueMessage{
-                        Topic = "R",
-                        Source = "R" + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
-                        EventType = "R",
-                        EventCount = 0
-                    };
-                    var messageAsJson = JsonConvert.SerializeObject(queueMessage);
-                    CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
-                    queue.AddMessageAsync(message);
-
-
-
-
                 var jsonContent = reader.ReadToEnd();
 
                 var eventType = "";
@@ -73,8 +58,10 @@ namespace Subscriber.Controllers
                         eventType= "Cloud";
                         var cloudEvent = UnpackCloudEvent(jsonContent);
 
-                        _topic = ((CustomTopicData)cloudEvent.Data).Topic;
-                        _source = ((CustomTopicData)cloudEvent.Data).Source;
+                        var topicData = JsonConvert.DeserializeObject<CustomTopicData>(cloudEvent.Data);
+
+                        _topic = topicData.Topic;
+                        _source = topicData.Source;
                         _count = 1; //<-- Will always be 1 if CloudEvent
                     }
                     else
@@ -82,21 +69,24 @@ namespace Subscriber.Controllers
                         eventType = "Grid";
                         var gridEvents = UnpackGridEvents(jsonContent);
                         
-                        _topic = ((CustomTopicData)gridEvents[0].Data).Topic;
-                        _source = ((CustomTopicData)gridEvents[0].Data).Source;
+                        var topicData = JsonConvert.DeserializeObject<CustomTopicData>(gridEvents[0].Data);
+
+                        _topic = topicData.Topic;
+                        _source = topicData.Source;
                         _count = gridEvents.Count;
                     }               
 
                     // Create a message and add it to the queue.
-                    //var queueMessage = new QueueMessage{
-                        //Topic = _topic,
-                        //Source = _source + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
-                        //EventType = eventType,
-                        //EventCount = _count
-                    //};
-                    //var messageAsJson = JsonConvert.SerializeObject(queueMessage);
-                    //CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
-                    //queue.AddMessageAsync(message);
+                    var queueMessage = new QueueMessage{
+                        Topic = _topic,
+                        Source = _source + "---" + HttpContext.Request.Headers["aeg-event-type"].FirstOrDefault(), //REMOVE
+                        EventType = eventType,
+                        EventCount = _count
+                    };
+
+                    var messageAsJson = JsonConvert.SerializeObject(queueMessage);
+                    CloudQueueMessage message = new CloudQueueMessage(messageAsJson);
+                    queue.AddMessageAsync(message);
                     
                     return Ok();
                 }
