@@ -16,13 +16,12 @@ A web api that subscribes to and acts upon received events via webhooks. Once a 
 A consol app that polls the storage queue using an exponential backoff strategy. Verifies that events are flowing through the system and writes final output to the console.
 
 # Running Sample:
-Update the .env file with your Azure Event Grid settings
+Update the appsettings.json and .env files in the following locations with your Azure Event Grid and Azure Storage Account settings:
 
-**IMAGE HERE**
-
-You should also update the appsettings.json file in both projects if debugging the projects seperatly:
-
-**IMAGE HERE**
+    .env
+    Publisher/appsettings.json
+    Subscriber/appsettings.json
+    Validator/appsettings.json
 
 Deploy the WebApi project to Azure. For our sample we have an Azure Pipelines project set up for the deployment:
 
@@ -43,7 +42,7 @@ Build and run using Docker Compose:
 
 You will see both console applications emit their status in your output window:
 
-**IMAGE HERE**
+![Portal Resource Providers](https://github.com/INNVTV/Azure-EventGrid-Microservices/blob/master/_docs/imgs/terminal.png)
 
 # Azure Portal Setup
 
