@@ -58,7 +58,7 @@ namespace Subscriber.Controllers
                         eventType= "Cloud";
                         var cloudEvent = UnpackCloudEvent(jsonContent);
 
-                        var topicData = JsonConvert.DeserializeObject<CustomTopicData>(cloudEvent.Data);
+                        var topicData = JsonConvert.DeserializeObject<CustomTopicData>(cloudEvent.Data.ToString());
 
                         _topic = topicData.Topic;
                         _source = topicData.Source;
@@ -69,7 +69,7 @@ namespace Subscriber.Controllers
                         eventType = "Grid";
                         var gridEvents = UnpackGridEvents(jsonContent);
                         
-                        var topicData = JsonConvert.DeserializeObject<CustomTopicData>(gridEvents[0].Data);
+                        var topicData = JsonConvert.DeserializeObject<CustomTopicData>(gridEvents[0].Data.ToString());
 
                         _topic = topicData.Topic;
                         _source = topicData.Source;
